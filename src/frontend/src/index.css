@@ -1,0 +1,337 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "BricolageGrotesque";
+  src: url("/assets/fonts/BricolageGrotesque.woff2") format("woff2");
+  font-display: swap;
+  font-weight: 200 800;
+}
+
+@font-face {
+  font-family: "Figtree";
+  src: url("/assets/fonts/Figtree.woff2") format("woff2");
+  font-display: swap;
+  font-weight: 300 900;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+
+    /* Deep navy dark theme */
+    --background: 0.1 0.042 242;
+    --foreground: 0.97 0.005 220;
+    --card: 0.13 0.04 242;
+    --card-foreground: 0.97 0.005 220;
+    --popover: 0.15 0.038 238;
+    --popover-foreground: 0.97 0.005 220;
+
+    /* Orange primary */
+    --primary: 0.7 0.21 46;
+    --primary-foreground: 0.99 0 0;
+
+    --secondary: 0.16 0.044 240;
+    --secondary-foreground: 0.85 0.01 220;
+
+    --muted: 0.17 0.032 238;
+    --muted-foreground: 0.58 0.018 228;
+
+    --accent: 0.7 0.21 46;
+    --accent-foreground: 0.99 0 0;
+
+    --destructive: 0.58 0.22 27;
+    --destructive-foreground: 0.99 0 0;
+
+    --border: 0.24 0.038 238;
+    --input: 0.2 0.04 240;
+    --ring: 0.7 0.21 46;
+
+    --chart-1: 0.7 0.21 46;
+    --chart-2: 0.65 0.18 160;
+    --chart-3: 0.58 0.16 260;
+    --chart-4: 0.72 0.15 80;
+    --chart-5: 0.55 0.2 20;
+
+    --sidebar: 0.09 0.036 242;
+    --sidebar-foreground: 0.97 0.005 220;
+    --sidebar-primary: 0.7 0.21 46;
+    --sidebar-primary-foreground: 0.99 0 0;
+    --sidebar-accent: 0.16 0.04 240;
+    --sidebar-accent-foreground: 0.85 0.01 220;
+    --sidebar-border: 0.22 0.038 238;
+    --sidebar-ring: 0.7 0.21 46;
+
+    /* Custom game tokens */
+    --hcr-navy-deep: oklch(0.09 0.04 242);
+    --hcr-navy-mid: oklch(0.13 0.044 240);
+    --hcr-navy-header: oklch(0.14 0.046 238);
+    --hcr-navy-card: oklch(0.14 0.042 240);
+    --hcr-navy-card-hover: oklch(0.17 0.046 238);
+    --hcr-orange: oklch(0.7 0.21 46);
+    --hcr-orange-hot: oklch(0.6 0.24 40);
+    --hcr-orange-glow: oklch(0.7 0.21 46 / 0.35);
+    --hcr-gold: oklch(0.8 0.18 85);
+    --hcr-text-light: oklch(0.97 0.005 220);
+    --hcr-text-muted: oklch(0.65 0.02 228);
+    --hcr-footer-bg: oklch(0.07 0.034 244);
+    --hcr-panel-border: oklch(0.24 0.042 238 / 0.7);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Figtree", system-ui, sans-serif;
+    color-scheme: dark;
+    background: var(--hcr-navy-deep);
+  }
+}
+
+/* ─── GAME CANVAS — dramatic portal frame ─── */
+.game-canvas-wrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  /* Layered ambient glow: orange halo + deep vignette */
+  box-shadow: 0 0 0 1px oklch(0.3 0.06 240 / 0.8), 0 0 0 2px
+    oklch(0.7 0.21 46 / 0.18), 0 0 40px oklch(0.7 0.21 46 / 0.22), 0 0 100px
+    oklch(0.7 0.21 46 / 0.1), 0 20px 60px oklch(0.05 0.03 242 / 0.8);
+  transition: box-shadow 0.4s ease;
+}
+
+.game-canvas-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  border: 1.5px solid oklch(0.7 0.21 46 / 0.28);
+  pointer-events: none;
+  z-index: 2;
+  /* Top edge highlight — looks like a lit monitor bezel */
+  background: linear-gradient(
+    180deg,
+    oklch(0.7 0.21 46 / 0.06) 0%,
+    transparent 10%
+  );
+}
+
+.game-canvas-wrapper:hover {
+  box-shadow: 0 0 0 1px oklch(0.3 0.06 240 / 0.8), 0 0 0 2px
+    oklch(0.7 0.21 46 / 0.3), 0 0 60px oklch(0.7 0.21 46 / 0.32), 0 0 120px
+    oklch(0.7 0.21 46 / 0.15), 0 20px 80px oklch(0.05 0.03 242 / 0.9);
+}
+
+/* Ambient backdrop behind the canvas section */
+.game-section-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.game-section-bg::before {
+  content: "";
+  position: absolute;
+  /* Orange radial glow centered above canvas */
+  top: -30%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 60%;
+  background: radial-gradient(
+    ellipse at center,
+    oklch(0.7 0.21 46 / 0.08) 0%,
+    oklch(0.7 0.21 46 / 0.03) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.game-section-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── ORANGE CTA BUTTON ─── */
+.btn-orange {
+  background: linear-gradient(135deg, oklch(0.72 0.21 48), oklch(0.58 0.24 38));
+  color: white;
+  border: none;
+  font-family: "BricolageGrotesque", sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px oklch(0.7 0.21 46 / 0.3), inset 0 1px 0
+    oklch(1 0 0 / 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-orange::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    oklch(1 0 0 / 0.08) 50%,
+    transparent 80%
+  );
+  pointer-events: none;
+}
+
+.btn-orange:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px oklch(0.7 0.21 46 / 0.5), inset 0 1px 0
+    oklch(1 0 0 / 0.18);
+}
+
+.btn-orange:active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow: 0 2px 8px oklch(0.7 0.21 46 / 0.35);
+}
+
+/* ─── NAV LINK ─── */
+.nav-link {
+  font-family: "BricolageGrotesque", sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: oklch(0.7 0.018 228);
+  transition: color 0.15s;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 2px;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--hcr-orange);
+  border-radius: 1px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--hcr-orange);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  transform: scaleX(1);
+}
+
+.nav-link.active {
+  color: var(--hcr-orange);
+}
+
+/* ─── UPGRADE BAR ─── */
+.upgrade-bar-track {
+  background: oklch(0.18 0.042 240);
+  border-radius: 4px;
+  overflow: hidden;
+  height: 5px;
+}
+
+.upgrade-bar-fill {
+  background: linear-gradient(90deg, var(--hcr-orange), var(--hcr-orange-hot));
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+  box-shadow: 0 0 6px var(--hcr-orange-glow);
+}
+
+/* ─── DARK PANEL CARDS (info section) ─── */
+.info-panel-col {
+  background: var(--hcr-navy-mid);
+  transition: background 0.2s;
+}
+
+.vehicle-card {
+  background: oklch(0.16 0.044 240);
+  border: 1px solid oklch(0.24 0.04 238 / 0.8);
+  border-radius: 10px;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow
+    0.2s;
+}
+
+.vehicle-card:hover {
+  background: oklch(0.19 0.05 238);
+  border-color: oklch(0.32 0.06 238 / 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px oklch(0.05 0.03 242 / 0.5);
+}
+
+.vehicle-card.unlocked {
+  border-color: oklch(0.55 0.14 148 / 0.5);
+}
+
+.vehicle-card.unlocked:hover {
+  border-color: oklch(0.6 0.16 148 / 0.7);
+  box-shadow: 0 4px 20px oklch(0.55 0.14 148 / 0.15);
+}
+
+.upgrade-row {
+  border-radius: 8px;
+  padding: 10px 10px 8px;
+  background: oklch(0.16 0.044 240);
+  border: 1px solid oklch(0.22 0.04 238 / 0.7);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.upgrade-row:hover {
+  background: oklch(0.18 0.048 238);
+  border-color: oklch(0.3 0.05 238 / 0.9);
+}
+
+.leaderboard-row {
+  border-radius: 7px;
+  transition: background 0.15s;
+}
+
+.leaderboard-row:hover {
+  background: oklch(0.18 0.044 240) !important;
+}
+
+/* ─── SECTION DIVIDERS ─── */
+.info-section-divider {
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    oklch(0.26 0.044 238 / 0.9) 20%,
+    oklch(0.26 0.044 238 / 0.9) 80%,
+    transparent 100%
+  );
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: oklch(0.11 0.04 242);
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.28 0.048 238);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.36 0.055 238);
+}
